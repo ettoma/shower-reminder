@@ -28,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DateTime _date;
+  DateTime _date = DateTime.now();
   DateTime _newDate;
   var _hoursDifference;
   final LocalStorage localStorage = new LocalStorage('ShowerDay');
@@ -41,9 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void readStorage() async {
     setState(() {
-      var _today = new DateTime.now();
       DateTime _showerDate = DateTime.parse(localStorage.getItem('ShowerDay'));
-      _hoursDifference = _showerDate.difference(_today).inHours;
+      _hoursDifference = _showerDate.difference(_date).inHours;
       _newDate = _showerDate;
     });
   }
