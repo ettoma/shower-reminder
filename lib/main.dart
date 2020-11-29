@@ -117,9 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Theme.of(context).primaryColor,
                     textColor: Colors.white,
                     onPressed: startTimer,
-                    child: Text(
-                      'Take shower!',
-                    ),
+                    child: Text('Take shower!', style: TextStyle(fontSize: 16)),
                   ),
                 ),
               )
