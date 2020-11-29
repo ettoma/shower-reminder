@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       child: Text(
-                        '${_hoursDifference} hours left',
+                        '$_hoursDifference hours left',
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
