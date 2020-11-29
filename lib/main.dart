@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text(
                     'Your next shower will be ',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 23,
                     ),
                   ),
                 ),
