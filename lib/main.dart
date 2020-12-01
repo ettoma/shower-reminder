@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 
@@ -41,10 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void readStorage() async {
     setState(() {
-      DateTime _showerDate = DateTime.parse(localStorage.getItem('ShowerDay'));
-      _hoursDifference = _showerDate.difference(_date).inHours;
-      _newDate = _showerDate;
+      if (localStorage != null) {
+        DateTime _showerDate =
+            DateTime.parse(localStorage.getItem('ShowerDay'));
+        _hoursDifference = _showerDate.difference(_date).inHours;
+        _newDate = _showerDate;
+      }
     });
+  }
+
+  String setText() {
+    return localStorage.getItem('ShowerDay') == null
+        ? 'Time to log your shower'
+        : DateFormat('EEEE, d MMM').format(_newDate);
   }
 
   void startTimer() {
@@ -54,6 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _hoursDifference = _newDate.difference(_date).inHours;
     });
     localStorage.setItem('ShowerDay', _newDate.toString());
+  }
+
+  Image imageSelection() {
+    return _hoursDifference != null && _hoursDifference > 14
+        ? Image.asset('assets/images/clean.png')
+        : Image.asset('assets/images/dirty.jpg');
   }
 
   @override
@@ -67,23 +83,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Column(
             children: [
-              _hoursDifference > 14
-                  ? (Image.asset(
-                      'assets/images/clean.png',
-                    ))
-                  : (Image.asset(
-                      'assets/images/dirty.jpg',
-                      width: 512,
-                      height: 512,
-                    )),
               Container(
+                child: imageSelection(),
+                width: 300,
+                height: 300,
+              ),
+              Container(
+                alignment: Alignment.center,
                 margin: EdgeInsets.all(8),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Your next shower will be ',
+                    _hoursDifference == null ? '' : 'Your next shower will be ',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 23,
                     ),
                   ),
                 ),
@@ -93,15 +106,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Column(
                   children: [
                     Text(
-                      localStorage.getItem('ShowerDay') == null
-                          ? 'Time to log your shower'
-                          : DateFormat('EEEE, d MMM').format(_newDate),
+                      setText(),
                       style: TextStyle(fontSize: 36),
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       child: Text(
-                        '$_hoursDifference hours left',
+                        _hoursDifference == null
+                            ? 'Log your first shower'
+                            : '$_hoursDifference hours left',
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
@@ -117,9 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Theme.of(context).primaryColor,
                     textColor: Colors.white,
                     onPressed: startTimer,
-                    child: Text(
-                      'Take shower!',
-                    ),
+                    child: Text('Take shower!', style: TextStyle(fontSize: 16)),
                   ),
                 ),
               )
