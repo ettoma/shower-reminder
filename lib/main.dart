@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 
@@ -51,12 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  String setText() {
-    return localStorage.getItem('ShowerDay') == null
-        ? 'Time to log your shower'
-        : DateFormat('EEEE, d MMM').format(_newDate);
-  }
-
   void startTimer() {
     setState(() {
       _date = DateTime.now();
@@ -64,6 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _hoursDifference = _newDate.difference(_date).inHours;
     });
     localStorage.setItem('ShowerDay', _newDate.toString());
+  }
+
+  String setText() {
+    return localStorage.getItem('ShowerDay') == null
+        ? 'Time to log your shower'
+        : DateFormat('EEEE, d MMM').format(_newDate);
   }
 
   Image imageSelection() {
@@ -83,11 +80,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Column(
             children: [
+              SizedBox(height: 60),
               Container(
                 child: imageSelection(),
                 width: 300,
                 height: 300,
               ),
+              SizedBox(height: 20),
               Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(8),
@@ -121,18 +120,24 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: SizedBox(
-                  width: 128,
-                  height: 48,
-                  child: RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    onPressed: startTimer,
-                    child: Text('Take shower!', style: TextStyle(fontSize: 16)),
+              Column(
+                children: [
+                  SizedBox(height: 60),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: SizedBox(
+                      width: 180,
+                      height: 60,
+                      child: RaisedButton(
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: startTimer,
+                        child: Text('Take shower!',
+                            style: TextStyle(fontSize: 16)),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               )
             ],
           ),
