@@ -76,8 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ))
                   : (Image.asset(
                       'assets/images/dirty.jpg',
-                      width: 512,
-                      height: 512,
                     )),
               Container(
                 alignment: Alignment.center,
