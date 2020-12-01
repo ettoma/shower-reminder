@@ -41,9 +41,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void readStorage() async {
     setState(() {
-      DateTime _showerDate = DateTime.parse(localStorage.getItem('ShowerDay'));
-      _hoursDifference = _showerDate.difference(_date).inHours;
-      _newDate = _showerDate;
+      if (localStorage != null) {
+        DateTime _showerDate =
+            DateTime.parse(localStorage.getItem('ShowerDay'));
+        _hoursDifference = _showerDate.difference(_date).inHours;
+        _newDate = _showerDate;
+      }
     });
   }
 
@@ -67,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Column(
             children: [
-              _hoursDifference > 14
+              _hoursDifference != null && _hoursDifference > 14
                   ? (Image.asset(
                       'assets/images/clean.png',
                     ))
@@ -77,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 512,
                     )),
               Container(
+                alignment: Alignment.center,
                 margin: EdgeInsets.all(8),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
