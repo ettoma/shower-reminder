@@ -80,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 60),
               Container(
                 child: imageSelection(),
                 width: 300,
@@ -122,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Column(
                 children: [
-                  SizedBox(height: 60),
+                  SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: SizedBox(
