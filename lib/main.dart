@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
@@ -28,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DateTime _date = DateTime.now();
   DateTime _newDate;
+  Timer timer;
   var _hoursDifference;
   final LocalStorage localStorage = new LocalStorage('ShowerDay');
 
@@ -35,8 +39,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     localStorage.ready.then((_) => readStorage());
+    timer = Timer.periodic(Duration(minutes: 1), (Timer t) => updateHours());
   }
 
+  // At startup, checks if the local storage has data about the next shower
   void readStorage() async {
     setState(() {
       if (localStorage != null) {
@@ -48,6 +54,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // Updates the time left every minute when the app is running. Function runs every 1 minute from initState
+  void updateHours() {
+    setState(() {
+      DateTime now = DateTime.now();
+      DateTime showerDay = DateTime.parse(localStorage.getItem('ShowerDay'));
+      _hoursDifference = showerDay.difference(now).inHours;
+    });
+  }
+
+  // Add 3 days to the current date stored in the local storage
   void startTimer() {
     setState(() {
       _date = DateTime.now();
@@ -92,7 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    _hoursDifference == null ? '' : 'Your next shower will be ',
+                    _hoursDifference == null
+                        ? 'No shower logged yet'
+                        : 'Your next shower will be in',
                     style: TextStyle(
                       fontSize: 23,
                     ),
