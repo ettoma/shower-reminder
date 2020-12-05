@@ -4,6 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() {
   runApp(MyApp());
@@ -38,8 +42,49 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('flutter_devs');
+    var initializationSettingsIOs = IOSInitializationSettings();
+    var initSetttings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOs);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initSetttings,
+    );
     localStorage.ready.then((_) => readStorage());
     timer = Timer.periodic(Duration(minutes: 1), (Timer t) => updateHours());
+  }
+
+//
+  showNotification() async {
+    var android = AndroidNotificationDetails('id', 'channel ', 'description',
+        priority: Priority.high, importance: Importance.max);
+    var iOS = IOSNotificationDetails();
+    var platform = new NotificationDetails(android: android, iOS: iOS);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Shower reminder', 'Basic notification', platform,
+        payload: 'Reminder notification');
+  }
+
+  Future<void> scheduleNotification() async {
+    var scheduledNotificationDateTime = DateTime.now().add(Duration(hours: 64));
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'channel id',
+      'channel name',
+      'channel description',
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        'Shower reminder',
+        'It`s shower day! ',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics,
+        // uiLocalNotificationDateInterpretation: null,
+        androidAllowWhileIdle: true);
   }
 
   // At startup, checks if the local storage has data about the next shower
@@ -65,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Add 3 days to the current date stored in the local storage
   void startTimer() {
+    scheduleNotification();
     setState(() {
       _date = DateTime.now();
       _newDate = _date.add(new Duration(days: 3));
